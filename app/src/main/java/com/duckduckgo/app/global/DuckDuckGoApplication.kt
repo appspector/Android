@@ -20,6 +20,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.support.v4.app.Fragment
+import com.appspector.sdk.AppSpector
 import com.duckduckgo.app.browser.BuildConfig
 import com.duckduckgo.app.di.DaggerAppComponent
 import com.duckduckgo.app.global.notification.NotificationRegistrar
@@ -73,6 +74,15 @@ open class DuckDuckGoApplication : HasActivityInjector, HasServiceInjector, HasS
 
     override fun onCreate() {
         super.onCreate()
+
+        AppSpector
+                .build(this)
+                .addPerformanceMonitor()
+                .addHttpMonitor()
+                .addLogMonitor()
+                .addScreenshotMonitor()
+                .addSQLMonitor()
+                .run(BuildConfig.APPSPECTOR_API_KEY);
 
         if (!installLeakCanary()) return
 

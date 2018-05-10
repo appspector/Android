@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.appspector.sdk'
 apply from: '../versioning.gradle'
 
 ext {
-    VERSION_NAME = "5.3.1"
+    VERSION_NAME = "5.3.1-apsdk-${System.getenv('APPSPECTOR_SDK_VERSION')}-${System.getenv('CIRCLE_BUILD_NUM')}"
     USE_ORCHESTRATOR = project.hasProperty('orchestrator') ? project.property('orchestrator') : false
 }
 
@@ -16,10 +16,12 @@ android {
         applicationId "com.duckduckgo.mobile.android"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode buildVersionCode()
+        versionCode Integer.parseInt(System.getenv('CIRCLE_BUILD_NUM') ?: "0")
         versionName VERSION_NAME
         testInstrumentationRunner "com.duckduckgo.app.TestRunner"
-        archivesBaseName = "duckduckgo-$versionName"
+        archivesBaseName = "duckduckgo"
+
+        buildConfigField "String", "APPSPECTOR_API_KEY", "\"" + (System.getenv('APPSPECTOR_API_KEY') ?: "NmJiMzQ2MDktODg1OS00NWQ4LWI1NGYtM2MyNTA3NzJkNWIz") + "\""
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -90,6 +92,8 @@ ext {
 
 
 dependencies {
+    implementation "com.appspector:android-sdk:+"
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
