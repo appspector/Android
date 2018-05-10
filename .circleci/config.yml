@@ -10,7 +10,7 @@ jobs:
         - checkout
         - run:
             name: Assemble build
-            command: ./gradlew clean :app:assembleDevDebug
+            command: ./gradlew :app:assembleDebug
         - run:
             name: Upload to HockeyApp
             command: sh ./.circleci/hockeyapp-upload.sh
